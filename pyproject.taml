@@ -5,3 +5,4 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "gmod_stat_tracker"
 version = "0.1.0"
+packages = {find = {where = "src"}}

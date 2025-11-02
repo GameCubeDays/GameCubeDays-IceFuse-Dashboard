@@ -1,10 +1,3 @@
-import sys
-import os
-
-# --- Add the 'src' directory to the Python path ---
-# This is one way to fix the 'ModuleNotFound' error
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
-
 from gmod_stat_tracker.pipeline import scrape_and_merge_data
 from gmod_stat_tracker.visualizations import generate_all_graphs
 from gmod_stat_tracker.config import (

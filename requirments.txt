@@ -1,9 +1,9 @@
 pandas
 selenium
 webdriver-manager
-requests
+plotly
 gspread
 google-auth
-plotly
-kaleido
+requests
 python-dotenv
+kaleido

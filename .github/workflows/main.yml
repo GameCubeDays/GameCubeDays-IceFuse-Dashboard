@@ -3,63 +3,57 @@ name: Update GMod Stats and Deploy Website
 
 # This controls WHEN the automation runs
 on:
-  # This runs it on a schedule: '0 * * * *' means "at minute 0 of every hour"
   schedule:
-    - cron: '0 * * * *'
-  
-  # This also adds a "Run workflow" button to the Actions tab so you can test it
-  workflow_dispatch:
+    - cron: '0 * * * *' # "at minute 0 of every hour"
+  workflow_dispatch: # Adds a "Run workflow" button to test
 
 # This defines the JOB that will run
 jobs:
   build-and-deploy:
-    # This tells it to run on a standard, fresh virtual machine
     runs-on: ubuntu-latest
     
-    # These are the steps it will take, in order
+    # NEW: Set a default working directory for all 'run' steps
+    defaults:
+      run:
+        working-directory: ./GameCubeDays-IceFuse-Dashboard
+
     steps:
-      # 1. It checks out a copy of your repository's code
+      # 1. Checks out code into the 'GameCubeDays-IceFuse-Dashboard' folder
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          path: GameCubeDays-IceFuse-Dashboard # Explicitly check out into this path
 
-      # 2. It installs Python
+      # 2. Installs Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Make sure this matches your Python version
+          python-version: '3.11'
 
-      # 3. It installs all the packages from your requirements.txt file
+      # 3. Installs dependencies (now runs inside the project folder)
       - name: Install dependencies
-        working-directory: ./GameCubeDays-IceFuse-Dashboard # <-- ADDED THIS
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .
 
-      # 4. This is a magic step: It takes the secret text you saved
-      #    and creates the real 'google_sheets_service_account.json' file
-      #    so your script can find it.
+      # 4. Creates credentials file (now runs inside the project folder)
       - name: Create Google Sheets Credentials
-        working-directory: ./GameCubeDays-IceFuse-Dashboard # <-- ADDED THIS
         run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > google_sheets_service_account.json
 
-      # 5. It runs your main script. Notice how it feeds your other secrets
-      #    into the script as environment variables.
+      # 5. Runs your script (now runs inside the project folder)
       - name: Run data pipeline
-        working-directory: ./GameCubeDays-IceFuse-Dashboard # <-- ADDED THIS
         run: python main.py
         env:
           BATTLEMETRICS_USERNAME: ${{ secrets.BATTLEMETRICS_USERNAME }}
           BATTLEMETRICS_PASSWORD: ${{ secrets.BATTLEMETRICS_PASSWORD }}
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
 
-      # 6. Finally, it takes the 'graphs' folder that main.py just created
-      #    and "deploys" it to a special branch called 'gh-pages'
-      #    This branch will be our website.
+      # 6. Deploys the 'graphs' folder
       - name: Deploy to GitHub Pages
-        working-directory: ./GameCubeDays-IceFuse-Dashboard # <-- ADDED THIS
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./graphs
+          # UPDATED: Point to the graphs folder inside the checkout directory
+          publish_dir: ./GameCubeDays-IceFuse-Dashboard/graphs
           publish_branch: gh-pages

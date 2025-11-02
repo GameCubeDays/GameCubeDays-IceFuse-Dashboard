@@ -33,6 +33,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -e .  # <-- THIS IS THE NEW LINE TO INSTALL YOUR PACKAGE
 
       # 4. This is a magic step: It takes the secret text you saved
       #    and creates the real 'google_sheets_service_account.json' file

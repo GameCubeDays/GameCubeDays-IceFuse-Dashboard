@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+*.env
+
+# Credentials
+google_sheets_service_account.json
+
+# Generated Data & Graphs
+outputs/
+graphs/
+cache/
+*.csv
+*.html
+*.png
+*.pkl

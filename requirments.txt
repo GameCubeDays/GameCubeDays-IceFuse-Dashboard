@@ -1,0 +1,9 @@
+pandas
+selenium
+webdriver-manager
+requests
+gspread
+google-auth
+plotly
+kaleido
+python-dotenv
